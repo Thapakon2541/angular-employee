@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +16,9 @@ import com.example.demo.model.Employee;
 import com.example.demo.repository.EmployeeRepository;
 
 import java.lang.module.ResolutionException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/")
@@ -49,5 +52,15 @@ public class EmployeeController {
 		employee.setEmailId(employeeDetails.getEmailId());
 		 Employee updateEmployee = employeeRepository.save(employee);
 		 return ResponseEntity.ok(updateEmployee);
+	}
+	// delete 
+	@DeleteMapping("/employees/{id}")
+	public Map<String, Boolean>deleteEmployee(@PathVariable Long id){
+		Employee employee = employeeRepository.findById(id).orElseThrow(()->new ResolutionException("Employee id:"+id));
+		employeeRepository.delete(employee);
+		Map<String, Boolean> responseMap = new HashMap<>();
+		responseMap.put("delete", Boolean.TRUE);
+		return responseMap;
+	
 	}
 }
